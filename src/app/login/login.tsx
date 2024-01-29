@@ -1,6 +1,16 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 export default function Login() {
+    const [tampilanPassword, aturPassword] = useState(false);
+
+    const tombolBukaTutupPassword = () => {
+        aturPassword(!tampilanPassword);
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="w-full max-w-xs border p-8 rounded-lg">
@@ -21,7 +31,13 @@ export default function Login() {
                     <div className="mb-6">
                         <label id="password"  className="block text-gray-500 text-sm font-bold mb-2">Password:</label>
 
-                        <input type="password" className=" text-sm border rounded w-full py-2 px-3 text-gray-700" placeholder="****"/>
+                        <div className="relative">
+                            <input type={tampilanPassword ? "text" : "password"} className=" text-sm border rounded w-full py-2 px-3 text-gray-700" placeholder="****"/>
+                            <button type="button" onClick={tombolBukaTutupPassword} className="absolute inset-y-0 right-0 px-4 py-1 focus:outline-none">
+                            {tampilanPassword ? <IconEye className="text-gray-400"/> : <IconEyeOff className="text-gray-400"/>}
+                            </button>
+                        </div>
+
                     </div>
 
                     <button className="w-full py-2 bg-blue-500">

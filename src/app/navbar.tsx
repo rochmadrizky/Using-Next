@@ -11,6 +11,9 @@ export default function Navbar() {
                     <Link href="/login">
                         <li>Login</li>
                     </Link>
+                    <Link href="/todolist">
+                        <li>TodoList</li>
+                    </Link>
                 </ul>
             </div>
         </div>
