@@ -1,9 +1,12 @@
-import TodoList from "./todolist";
+import React from 'react';
+import TodoList from './todolist';
 
-export default function TodoListPage() {
+const TodoListPage = () => {
     return (
         <div>
             <TodoList/>
         </div>
-    )
-}
+    );
+};
+
+export default TodoListPage;

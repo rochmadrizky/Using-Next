@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
-export default function Login() {
+const Login = () => {
     const [tampilanPassword, aturPassword] = useState(false);
 
     const tombolBukaTutupPassword = () => {
@@ -40,7 +40,7 @@ export default function Login() {
 
                     </div>
 
-                    <button className="w-full py-2 bg-blue-500">
+                    <button className="w-full py-2 bg-blue-500 text-white">
                         Login
                     </button>
 
@@ -58,4 +58,6 @@ export default function Login() {
             </div>
         </div>
     )
-}
+};
+
+export default Login;
