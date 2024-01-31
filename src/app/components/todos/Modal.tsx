@@ -1,11 +1,9 @@
-// components/Modal.tsx
-
 import React, { useState, useEffect } from "react";
 
 interface ModalProps {
   onClose: () => void;
   onAdd: (text: string) => void;
-  onSubmit: (text: string) => void; // Tambahkan prop onSubmit untuk pengeditan
+  onSubmit: (text: string) => void;
   initialText?: string;
 }
 
@@ -30,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({
 
   const handleEdit = () => {
     if (text.trim() !== "") {
-      onSubmit(text); // Panggil fungsi onSubmit untuk mengirim perubahan teks
+      onSubmit(text);
       setText("");
     }
   };
