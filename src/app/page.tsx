@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react";
+import TodoList from "./components/TodoList";
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
-    <div>
-      ini home ygy
+    <div className="container mx-auto p-4">
+      <TodoList />
     </div>
   );
 };

@@ -1,0 +1,129 @@
+// components/TodoList.tsx
+"use client";
+
+import React, { useState } from "react";
+import TodoItem from "./TodoItem";
+import Modal from "./Modal";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import ConfirmDeleteAllModal from "./ConfirmDeleteAllModal"; // Import modal baru
+
+const TodoList: React.FC = () => {
+  const [items, setItems] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] =
+    useState<boolean>(false); // State untuk modal hapus semua
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditIndex(null);
+  };
+
+  const handleAddItem = (text: string) => {
+    setItems([text, ...items]);
+    setIsModalOpen(false);
+  };
+
+  const handleEditItem = (index: number) => {
+    setEditIndex(index);
+    setIsModalOpen(true);
+  };
+
+  const handleEditSubmit = (editedText: string) => {
+    if (editIndex !== null) {
+      const updatedItems = [...items];
+      updatedItems[editIndex] = editedText;
+      setItems(updatedItems);
+      setEditIndex(null);
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleDeleteItem = (index: number) => {
+    setDeleteIndex(index);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteIndex !== null) {
+      const updatedItems = [...items];
+      updatedItems.splice(deleteIndex, 1);
+      setItems(updatedItems);
+      setDeleteIndex(null);
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeleteIndex(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleDeleteAll = () => {
+    setIsDeleteAllModalOpen(true); // Ketika tombol "Hapus Semua" diklik, buka modal konfirmasi hapus semua
+  };
+
+  const handleConfirmDeleteAll = () => {
+    setItems([]);
+    setIsDeleteAllModalOpen(false);
+  };
+
+  const handleCloseDeleteAllModal = () => {
+    setIsDeleteAllModalOpen(false);
+  };
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-4">To-Do List</h1>
+      <button
+        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 mb-4"
+        onClick={openModal}
+      >
+        Add Item
+      </button>
+      {items.length > 0 && (
+        <button
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mb-4 ml-4"
+          onClick={handleDeleteAll}
+        >
+          Hapus Semua
+        </button>
+      )}
+      {items.map((item, index) => (
+        <TodoItem
+          key={index}
+          text={item}
+          onEdit={() => handleEditItem(index)}
+          onDelete={() => handleDeleteItem(index)}
+        />
+      ))}
+      {isModalOpen && (
+        <Modal
+          onClose={closeModal}
+          onAdd={handleAddItem}
+          initialText={editIndex !== null ? items[editIndex] : ""}
+          onSubmit={handleEditSubmit}
+        />
+      )}
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+      />
+      {/* Tambahkan modal hapus semua */}
+      <ConfirmDeleteAllModal
+        isOpen={isDeleteAllModalOpen}
+        onClose={handleCloseDeleteAllModal}
+        onConfirm={handleConfirmDeleteAll}
+      />
+    </div>
+  );
+};
+
+export default TodoList;
