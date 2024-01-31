@@ -6,8 +6,13 @@ import Modal from "./Modal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import ConfirmDeleteAllModal from "./ConfirmDeleteAllModal";
 
+interface Todo {
+  text: string;
+  checked: boolean;
+}
+
 const TodoList: React.FC = () => {
-  const [items, setItems] = useState<string[]>([]);
+  const [items, setItems] = useState<Todo[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
@@ -20,66 +25,23 @@ const TodoList: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditIndex(null);
-  };
-
+  // Add item to the list
   const handleAddItem = (text: string) => {
-    setItems([text, ...items]);
+    setItems([{ text, checked: false }, ...items]);
     setIsModalOpen(false);
   };
 
+  // Edit item in the list
   const handleEditItem = (index: number) => {
     setEditIndex(index);
     setIsModalOpen(true);
   };
 
-  const handleEditSubmit = (editedText: string) => {
-    if (editIndex !== null) {
-      const updatedItems = [...items];
-      updatedItems[editIndex] = editedText;
-      setItems(updatedItems);
-      setEditIndex(null);
-      setIsModalOpen(false);
-    }
-  };
-
-  const handleDeleteItem = (index: number) => {
-    setDeleteIndex(index);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    if (deleteIndex !== null) {
-      const updatedItems = [...items];
-      updatedItems.splice(deleteIndex, 1);
-      setItems(updatedItems);
-      setDeleteIndex(null);
-      setIsDeleteModalOpen(false);
-    }
-  };
-
-  const handleCloseDeleteModal = () => {
-    setDeleteIndex(null);
-    setIsDeleteModalOpen(false);
-  };
-
-  const handleDeleteAll = () => {
-    setIsDeleteAllModalOpen(true);
-  };
-
-  const handleConfirmDeleteAll = () => {
-    setItems([]);
-    setIsDeleteAllModalOpen(false);
-  };
-
-  const handleCloseDeleteAllModal = () => {
-    setIsDeleteAllModalOpen(false);
-  };
-
-  const handleChecklistAll = () => {
-    setChecklistAll(!checklistAll);
+  // Toggle individual item checklist
+  const handleToggleChecklist = (index: number) => {
+    const updatedItems = [...items];
+    updatedItems[index].checked = !updatedItems[index].checked;
+    setItems(updatedItems);
   };
 
   return (
@@ -95,13 +57,13 @@ const TodoList: React.FC = () => {
         <>
           <button
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mb-4 ml-4"
-            onClick={handleDeleteAll}
+            onClick={() => setIsDeleteAllModalOpen(true)}
           >
             Hapus Semua
           </button>
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4 ml-4"
-            onClick={handleChecklistAll}
+            onClick={() => setChecklistAll(!checklistAll)}
           >
             Checklist All
           </button>
@@ -110,29 +72,51 @@ const TodoList: React.FC = () => {
       {items.map((item, index) => (
         <TodoItem
           key={index}
-          text={item}
-          checked={checklistAll}
+          text={item.text}
+          checked={item.checked || checklistAll}
           onEdit={() => handleEditItem(index)}
-          onDelete={() => handleDeleteItem(index)}
+          onDelete={() => setDeleteIndex(index)}
+          onToggleChecklist={() => handleToggleChecklist(index)}
         />
       ))}
       {isModalOpen && (
         <Modal
-          onClose={closeModal}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditIndex(null);
+          }}
           onAdd={handleAddItem}
-          initialText={editIndex !== null ? items[editIndex] : ""}
-          onSubmit={handleEditSubmit}
+          initialText={editIndex !== null ? items[editIndex].text : ""}
+          onSubmit={(editedText: string) => {
+            if (editIndex !== null) {
+              const updatedItems = [...items];
+              updatedItems[editIndex].text = editedText;
+              setItems(updatedItems);
+              setEditIndex(null);
+              setIsModalOpen(false);
+            }
+          }}
         />
       )}
       <ConfirmDeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
+        isOpen={deleteIndex !== null}
+        onClose={() => setDeleteIndex(null)}
+        onConfirm={() => {
+          if (deleteIndex !== null) {
+            const updatedItems = [...items];
+            updatedItems.splice(deleteIndex, 1);
+            setItems(updatedItems);
+            setDeleteIndex(null);
+          }
+        }}
       />
       <ConfirmDeleteAllModal
         isOpen={isDeleteAllModalOpen}
-        onClose={handleCloseDeleteAllModal}
-        onConfirm={handleConfirmDeleteAll}
+        onClose={() => setIsDeleteAllModalOpen(false)}
+        onConfirm={() => {
+          setItems([]);
+          setIsDeleteAllModalOpen(false);
+        }}
       />
     </div>
   );
