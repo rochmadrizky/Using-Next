@@ -1,3 +1,4 @@
+// TodoList.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -19,28 +20,33 @@ const TodoList: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] =
     useState<boolean>(false);
-  const [checklistAll, setChecklistAll] = useState<boolean>(false);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Add item to the list
   const handleAddItem = (text: string) => {
     setItems([{ text, checked: false }, ...items]);
     setIsModalOpen(false);
   };
 
-  // Edit item in the list
   const handleEditItem = (index: number) => {
     setEditIndex(index);
     setIsModalOpen(true);
   };
 
-  // Toggle individual item checklist
   const handleToggleChecklist = (index: number) => {
     const updatedItems = [...items];
     updatedItems[index].checked = !updatedItems[index].checked;
+    setItems(updatedItems);
+  };
+
+  const handleToggleAllChecklist = () => {
+    const allChecked = items.every((item) => item.checked);
+    const updatedItems = items.map((item) => ({
+      ...item,
+      checked: !allChecked,
+    }));
     setItems(updatedItems);
   };
 
@@ -63,7 +69,7 @@ const TodoList: React.FC = () => {
           </button>
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4 ml-4"
-            onClick={() => setChecklistAll(!checklistAll)}
+            onClick={handleToggleAllChecklist}
           >
             Checklist All
           </button>
@@ -73,7 +79,7 @@ const TodoList: React.FC = () => {
         <TodoItem
           key={index}
           text={item.text}
-          checked={item.checked || checklistAll}
+          checked={item.checked}
           onEdit={() => handleEditItem(index)}
           onDelete={() => setDeleteIndex(index)}
           onToggleChecklist={() => handleToggleChecklist(index)}
