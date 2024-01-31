@@ -20,13 +20,16 @@ const TodoList: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] =
     useState<boolean>(false);
+  const [isAnyItemChecked, setIsAnyItemChecked] = useState<boolean>(false);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
   const handleAddItem = (text: string) => {
-    setItems([{ text, checked: false }, ...items]);
+    const newItems = [{ text, checked: false }, ...items];
+    setItems(newItems);
+    setIsAnyItemChecked(newItems.some((item) => item.checked));
     setIsModalOpen(false);
   };
 
@@ -39,6 +42,7 @@ const TodoList: React.FC = () => {
     const updatedItems = [...items];
     updatedItems[index].checked = !updatedItems[index].checked;
     setItems(updatedItems);
+    setIsAnyItemChecked(updatedItems.some((item) => item.checked));
   };
 
   const handleToggleAllChecklist = () => {
@@ -48,6 +52,7 @@ const TodoList: React.FC = () => {
       checked: !allChecked,
     }));
     setItems(updatedItems);
+    setIsAnyItemChecked(!allChecked);
   };
 
   return (
@@ -62,8 +67,11 @@ const TodoList: React.FC = () => {
       {items.length > 0 && (
         <>
           <button
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mb-4 ml-4"
+            className={`px-4 py-2 ${
+              isAnyItemChecked ? "bg-red-500" : "bg-gray-300"
+            } text-white rounded hover:bg-red-600 mb-4 ml-4`}
             onClick={() => setIsDeleteAllModalOpen(true)}
+            disabled={!isAnyItemChecked}
           >
             Hapus Semua
           </button>
@@ -71,7 +79,7 @@ const TodoList: React.FC = () => {
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4 ml-4"
             onClick={handleToggleAllChecklist}
           >
-            Checklist All
+            {isAnyItemChecked ? "Unchecklist All" : "Checklist All"}
           </button>
         </>
       )}
@@ -113,6 +121,7 @@ const TodoList: React.FC = () => {
             updatedItems.splice(deleteIndex, 1);
             setItems(updatedItems);
             setDeleteIndex(null);
+            setIsAnyItemChecked(updatedItems.some((item) => item.checked));
           }
         }}
       />
@@ -122,6 +131,7 @@ const TodoList: React.FC = () => {
         onConfirm={() => {
           setItems([]);
           setIsDeleteAllModalOpen(false);
+          setIsAnyItemChecked(false);
         }}
       />
     </div>
