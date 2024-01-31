@@ -29,18 +29,6 @@ const TodoList = () => {
     null
   );
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isEditItemModalOpen, setIsEditItemModalOpen] =
-    useState<boolean>(false);
-  const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
-
-  const openEditItemModal = (index: number) => {
-    setEditingItemIndex(index);
-    setIsEditItemModalOpen(true);
-  };
-
-  const closeEditItemModal = () => {
-    setIsEditItemModalOpen(false);
-  };
 
   const openDeleteItemModal = (index: number) => {
     if (!isEditing) {

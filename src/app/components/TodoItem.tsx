@@ -4,14 +4,21 @@ import React from "react";
 
 interface TodoItemProps {
   text: string;
+  checked: boolean;
   onEdit: () => void; // Tambahkan prop onEdit
   onDelete: () => void; // Tambahkan prop onDelete
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ text, onEdit, onDelete }) => {
+const TodoItem: React.FC<TodoItemProps> = ({
+  text,
+  onEdit,
+  checked,
+  onDelete,
+}) => {
   return (
     <div className="flex items-center mt-2">
-      <input type="checkbox" className="mr-2" />
+      <input type="checkbox" className="mr-2" checked={checked} />
+
       <p>{text}</p>
       <button
         className="px-2 py-1 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 ml-2"

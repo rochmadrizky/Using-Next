@@ -1,11 +1,10 @@
-// components/TodoList.tsx
 "use client";
 
 import React, { useState } from "react";
 import TodoItem from "./TodoItem";
 import Modal from "./Modal";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
-import ConfirmDeleteAllModal from "./ConfirmDeleteAllModal"; // Import modal baru
+import ConfirmDeleteAllModal from "./ConfirmDeleteAllModal";
 
 const TodoList: React.FC = () => {
   const [items, setItems] = useState<string[]>([]);
@@ -14,7 +13,8 @@ const TodoList: React.FC = () => {
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] =
-    useState<boolean>(false); // State untuk modal hapus semua
+    useState<boolean>(false);
+  const [checklistAll, setChecklistAll] = useState<boolean>(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -66,7 +66,7 @@ const TodoList: React.FC = () => {
   };
 
   const handleDeleteAll = () => {
-    setIsDeleteAllModalOpen(true); // Ketika tombol "Hapus Semua" diklik, buka modal konfirmasi hapus semua
+    setIsDeleteAllModalOpen(true);
   };
 
   const handleConfirmDeleteAll = () => {
@@ -76,6 +76,10 @@ const TodoList: React.FC = () => {
 
   const handleCloseDeleteAllModal = () => {
     setIsDeleteAllModalOpen(false);
+  };
+
+  const handleChecklistAll = () => {
+    setChecklistAll(!checklistAll);
   };
 
   return (
@@ -88,17 +92,26 @@ const TodoList: React.FC = () => {
         Add Item
       </button>
       {items.length > 0 && (
-        <button
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mb-4 ml-4"
-          onClick={handleDeleteAll}
-        >
-          Hapus Semua
-        </button>
+        <>
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mb-4 ml-4"
+            onClick={handleDeleteAll}
+          >
+            Hapus Semua
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4 ml-4"
+            onClick={handleChecklistAll}
+          >
+            Checklist All
+          </button>
+        </>
       )}
       {items.map((item, index) => (
         <TodoItem
           key={index}
           text={item}
+          checked={checklistAll}
           onEdit={() => handleEditItem(index)}
           onDelete={() => handleDeleteItem(index)}
         />
@@ -116,7 +129,6 @@ const TodoList: React.FC = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-      {/* Tambahkan modal hapus semua */}
       <ConfirmDeleteAllModal
         isOpen={isDeleteAllModalOpen}
         onClose={handleCloseDeleteAllModal}
